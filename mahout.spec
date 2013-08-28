@@ -1,5 +1,5 @@
 Name:          mahout
-Version:       0.7
+Version:       0.8
 Release:       1%{?dist}
 Summary:       Scalable machine learning libraries
 License:       ASL 2.0
@@ -125,11 +125,12 @@ find . -name "*.class" -print -delete
 #%%pom_xpath_inject "pom:project/pom:profiles/pom:profile/pom:dependencies/pom:dependency[pom:artifactId = 'hadoop-mapreduce-client-common' ]"
 
 %pom_remove_dep org.apache.hadoop:
+# not necessary in Mahout 0.8
 # org.apache.commons:commons-math:jar:2.2
-sed -i "s|org.apache.commons.math|org.apache.commons.math3|" math/src/main/java/org/apache/mahout/math/ssvd/EigenSolverWrapper.java
-sed -i "s|EigenDecompositionImpl|EigenDecomposition|" math/src/main/java/org/apache/mahout/math/ssvd/EigenSolverWrapper.java
-sed -i "s|org.apache.commons.math|org.apache.commons.math3|"  \
- core/src/main/java/org/apache/mahout/classifier/sgd/TPrior.java
+# sed -i "s|org.apache.commons.math|org.apache.commons.math3|" math/src/main/java/org/apache/mahout/math/ssvd/EigenSolverWrapper.java
+# sed -i "s|EigenDecompositionImpl|EigenDecomposition|" math/src/main/java/org/apache/mahout/math/ssvd/EigenSolverWrapper.java
+# sed -i "s|org.apache.commons.math|org.apache.commons.math3|"  \
+# core/src/main/java/org/apache/mahout/classifier/sgd/TPrior.java
 
 # require  org.apache.commons.math.ConvergenceException
 #          org.apache.commons.math.FunctionEvaluationException
@@ -250,5 +251,8 @@ a
 %{_javadocdir}/%{name}
 
 %changelog
+* Wed Aug 28 2013 William Benton <willb@redhat.com> - 0.8-1
+- updated to 0.8; miscellaneous tweaks
+
 * Fri Aug 23 2013 gil cattaneo <puntogil@libero.it> 0.7-1
 - initial rpm
