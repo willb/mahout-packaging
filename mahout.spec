@@ -106,12 +106,13 @@ find . -name "*.class" -print -delete
 
 %pom_xpath_remove "pom:project/pom:profiles" core
 
+# XXX: this is assuredly the wrong way to do this
 %pom_xpath_inject "pom:project/pom:dependencies" "
 <dependency>
  <groupId>org.apache.hadoop</groupId>
  <artifactId>hadoop-common</artifactId>
  <scope>system</scope>
- <systemPath>/home/gil/rpmbuild/BUILD/hadoop-common-b92d9bcf559cc2e62fc166e09bd2852766b27bec/hadoop-common-project/hadoop-common/target/hadoop-common-2.0.5-alpha.jar</systemPath>
+ <systemPath>/usr/share/hadoop/common/hadoop-common.jar</systemPath>
 </dependency>" core
 
 %pom_xpath_inject "pom:project/pom:dependencies" "
@@ -119,12 +120,15 @@ find . -name "*.class" -print -delete
  <groupId>org.apache.hadoop</groupId>
  <artifactId>hadoop-mapreduce-client-core</artifactId>
  <scope>system</scope>
- <systemPath>/home/gil/rpmbuild/BUILD/hadoop-common-b92d9bcf559cc2e62fc166e09bd2852766b27bec/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/target/hadoop-mapreduce-client-core-2.0.5-alpha.jar</systemPath>
+ <systemPath>/usr/share/java/hadoop/hadoop-mapreduce-client-core.jar</systemPath>
 </dependency>" core
 
 #%%pom_xpath_inject "pom:project/pom:profiles/pom:profile/pom:dependencies/pom:dependency[pom:artifactId = 'hadoop-mapreduce-client-common' ]"
 
 %pom_remove_dep org.apache.hadoop:
+%pom_remove_dep org.apache.hadoop:hadoop-core core
+# %pom_remove_dep org.apache.hadoop:hadoop-core core
+
 # not necessary in Mahout 0.8
 # org.apache.commons:commons-math:jar:2.2
 # sed -i "s|org.apache.commons.math|org.apache.commons.math3|" math/src/main/java/org/apache/mahout/math/ssvd/EigenSolverWrapper.java
@@ -236,8 +240,8 @@ rm -r integration/src/main/java/org/apache/mahout/cf/taste/impl/model/cassandra/
 %build
 
 %mvn_build
--f -- -Phadoop-0.23
-a
+-f -- -Phadoop-0.23 -Dhadoop.version=2.0.5 -DskipTests
+
 %install
 
 %files
